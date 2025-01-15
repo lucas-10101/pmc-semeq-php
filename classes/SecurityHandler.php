@@ -11,7 +11,6 @@ class SecurityHandler
 {
 
     static $principal = null;
-    static $authenticated = false;
 
     const PUBLIC_PAGES = array(
         "/",
@@ -115,5 +114,11 @@ class SecurityHandler
                 header('Location: /login.php');
                 break;
         }
+    }
+
+    public static function isAuthenticated()
+    {
+        SessionManager::initSession();
+        return SessionManager::getUser() != null;
     }
 }

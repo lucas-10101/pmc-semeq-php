@@ -3,6 +3,7 @@
 namespace classes;
 
 use classes\SecurityHandler;
+use dao\UserDAO;
 
 /**
  * Handle user authentication.
@@ -10,14 +11,19 @@ use classes\SecurityHandler;
 class AuthenticationHandler
 {
 
+    public static $authenticationFailed = false;
+
     /**
      * Verify or delegate user authentication
      * @return void
      */
     public static function verify()
     {
+        AuthenticationHandler::$authenticationFailed = false;
+
         SecurityHandler::verify();
         AuthenticationHandler::login();
+
     }
 
     /**
@@ -26,12 +32,26 @@ class AuthenticationHandler
      */
     private static function login()
     {
+        $isLoginPage = substr($_SERVER['REQUEST_URI'], strlen($_SERVER['REQUEST_URI']) - strlen('/login.php')) == '/login.php';
 
-        if (!isset($_POST['username'], $_POST['password'])) {
+        $email = filter_input(INPUT_POST, 'email', FILTER_VALIDATE_EMAIL);
+        $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING);
+
+        if (!$isLoginPage || empty($email) || empty($password)) {
             return;
         }
 
-        $username = filter_input(INPUT_POST, 'username', FILTER_SANITIZE_STRING);
-        $password = filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING);
+        $dao = new UserDAO();
+        $user = $dao->findByEmailAndPassword($email, $password);
+
+        if (is_object($user)) {
+            SessionManager::setUser($user);
+
+            header('Location: /index.php');
+            exit;
+
+        } else {
+            AuthenticationHandler::$authenticationFailed = true;
+        }
     }
 }
