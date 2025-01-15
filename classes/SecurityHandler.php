@@ -10,10 +10,10 @@ use models\User;
 class SecurityHandler
 {
 
-    private static $principal = null;
-    private static $authenticated = false;
+    static $principal = null;
+    static $authenticated = false;
 
-    private const PUBLIC_PAGES = array(
+    const PUBLIC_PAGES = array(
         "/",
         "/index.php",
         "/login.php",
@@ -21,32 +21,23 @@ class SecurityHandler
         "/403.php"
     );
 
-    private const SECURED_PAGES = array(
-        '/pages/sale/sale.php' => 'SELLER'
+    const SECURED_PAGES = array(
+        '/pages/sale/sale.php' => 'SELLER',
+        '/pages/sale/purchase.php' => 'CLIENT'
     );
 
     /**
      * Validate security againts the current request.
      * @return bool
      */
-    public static function verify(): void
+    public static function verify()
     {
         $request_path = $_SERVER['REQUEST_URI'];
 
-        if (SecurityHandler::isPublic($request_path)) {
-            return;
+        if (!SecurityHandler::canAccess($request_path)) {
+            SecurityHandler::handleAccessDenied();
         }
 
-        $currentUser = SecurityHandler::getCurrentUser();
-
-        foreach (SecurityHandler::SECURED_PAGES as $page => $role) {
-            if (str_ends_with($request_path, $page) && $currentUser->role == $role) {
-                return;
-            }
-        }
-
-        SecurityHandler::handleAccessDenied();
-        return;
     }
 
     /**
@@ -56,7 +47,7 @@ class SecurityHandler
     public static function getCurrentUser()
     {
         if (session_status() === PHP_SESSION_NONE) {
-            return SecurityHandler::$principal = new User('-1', 'anonymous', 'anonymous');
+            return SecurityHandler::$principal = new User();
         }
 
         if (self::$principal === null) {
@@ -67,15 +58,37 @@ class SecurityHandler
         return SecurityHandler::$principal;
     }
 
+    public static function canAccess($request_path)
+    {
+
+        if (SecurityHandler::isPublic($request_path)) {
+            return true;
+        }
+
+        $currentUser = SecurityHandler::getCurrentUser();
+
+        foreach (SecurityHandler::SECURED_PAGES as $page => $role) {
+            $ending = substr($request_path, strlen($request_path) - strlen($page));
+
+            if ($ending == $page && $currentUser->role == $role) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     /**
      * Check if the specified path is public to access.
      * @param mixed $path The path ($_SERVER['request_uri'])
      * @return bool true If the access is allowed to anynone, else otherwise
      */
-    private static function isPublic($path)
+    private static function isPublic($request_path)
     {
         foreach (SecurityHandler::PUBLIC_PAGES as $page) {
-            if (str_ends_with($path, $page)) {
+
+            $ending = substr($request_path, strlen($request_path) - strlen($page));
+            if ($ending == $page) {
                 return true;
             }
         }
@@ -84,7 +97,7 @@ class SecurityHandler
 
     private static function loadUserData()
     {
-        return SecurityHandler::$principal = new User('1', 'test', 'NONE');
+        return SecurityHandler::$principal = new User();
     }
 
     private static function handleAccessDenied()

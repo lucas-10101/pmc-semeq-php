@@ -2,24 +2,48 @@
 
 namespace classes;
 
-USE PDO;
+use PDO;
 
 class DatabaseConnection
 {
     private static $connection = null;
-    private const PROVIDER = "oci";
-    private const HOST = "127.0.0.1";
-    private const PORT = "1521";
-    private const USERNAME = "app";
-    private const PASSWORD = "app";
-    private const DATABASE = "PMC";
+
+    private static $provider = "oracle";
+
+    private static $host = "127.0.0.1";
+
+    private static $port = 1521;
+
+    private static $username = "PMC";
+
+    private static $password = "PMC-APPLICATION-USER";
+
+    private static $pdo_options = array(
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ
+    );
 
     public function __construct()
     {
         if (DatabaseConnection::$connection == null) {
-            $dsn = self::PROVIDER . ":host=" . self::HOST . ";port=" . self::PORT . ";dbname=" . self::DATABASE;
-            DatabaseConnection::$connection = new PDO($dsn, self::USERNAME, self::PASSWORD);
+            switch (self::$provider) {
+                case "oracle":
+                default:
+                    $this->connectToOracleDatabase();
+            }
         }
+    }
+
+    private static function connectToOracleDatabase()
+    {
+
+        $host = DatabaseConnection::$host;
+        $port = DatabaseConnection::$port;
+        $serviceName = "XEPDB1";
+
+        //$dsn = "oci:dbname=(DESCRIPTION=(ADDRESS_LIST=(ADDRESS=(PROTOCOL=TCP)(HOST=$host)(PORT=$port)))(CONNECT_DATA=(SID=ORCL)))";
+        $dsn = "oci:dbname=$host:$port/$serviceName";
+
+        DatabaseConnection::$connection = new PDO($dsn, self::$username, self::$password, self::$pdo_options);
     }
 
     public function getConnection()

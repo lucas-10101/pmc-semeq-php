@@ -1,3 +1,13 @@
+<?php
+
+require "autoload.php";
+
+use classes\DatabaseConnection;
+
+$t = new DatabaseConnection();
+
+?>
+
 <!DOCTYPE html>
 <html>
 
@@ -12,11 +22,11 @@
 
 <br><br><br>
 
-<div class="container-fluid m-3 p-3 bg-body-secondary text-center">
-    <h1 class="border rounded border-warning border-2 p-2">Sistema de vendas de produtos</h1>
+<div class="container-fluid rounded mx-auto w-75 p-3 bg-body-secondary text-center">
+    <h1 class="p-2">Sistema de vendas de produtos</h1>
     <hr>
     <p>
-        Sistema para teste de PMC para empresa SEMEQ
+        Sistema para teste de PMC para empresa SEMEQ - jan/2024 - github@lucas10101
     </p>
 </div>
 
