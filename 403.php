@@ -8,7 +8,7 @@
 
 <body>
     <div class="container p-4 mt-5 border rounded bg-danger text-center">
-        <h1>404 - Não autorizado</h1>
+        <h1>403 - Não autorizado</h1>
         <hr>
 
         <p>

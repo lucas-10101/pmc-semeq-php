@@ -9,8 +9,7 @@
     use classes\AuthenticationHandler;
     use classes\SecurityHandler;
 
-    var_dump(SecurityHandler::isAuthenticated());
-    if (SecurityHandler::isAuthenticated()){
+    if (SecurityHandler::isAuthenticated()) {
         header("Location: /index.php");
         die;
     }

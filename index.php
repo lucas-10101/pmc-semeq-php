@@ -1,13 +1,3 @@
-<?php
-
-require "autoload.php";
-
-use classes\DatabaseConnection;
-
-$t = new DatabaseConnection();
-
-?>
-
 <!DOCTYPE html>
 <html>
 

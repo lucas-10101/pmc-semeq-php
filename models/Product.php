@@ -1,12 +1,10 @@
 <?php
-
 namespace models;
 
-class Seller {
-
+class Product {
     public $id;
 
     public $name;
 
-    public $user_id;
+    public $price;
 }

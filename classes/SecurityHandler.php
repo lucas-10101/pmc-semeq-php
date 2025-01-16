@@ -21,8 +21,9 @@ class SecurityHandler
     );
 
     const SECURED_PAGES = array(
-        '/pages/sale/sale.php' => 'SELLER',
-        '/pages/sale/purchase.php' => 'CLIENT'
+        '/pages/sales.php' => 'SELLER',
+        '/pages/products.php' => 'SELLER',
+        '/pages/purchases.php' => 'CLIENT'
     );
 
     /**
@@ -31,7 +32,7 @@ class SecurityHandler
      */
     public static function verify()
     {
-        $request_path = $_SERVER['REQUEST_URI'];
+        $request_path = $_SERVER['SCRIPT_NAME'];
 
         if (!SecurityHandler::canAccess($request_path)) {
             SecurityHandler::handleAccessDenied();
@@ -39,23 +40,6 @@ class SecurityHandler
 
     }
 
-    /**
-     * Get the current authenticated user or an default anonymous user if is not authenticated (public pages not require authentication)
-     * @return User The current user
-     */
-    public static function getCurrentUser()
-    {
-        if (session_status() === PHP_SESSION_NONE) {
-            return SecurityHandler::$principal = new User();
-        }
-
-        if (self::$principal === null) {
-            SecurityHandler::loadUserData();
-        }
-
-        SecurityHandler::$authenticated = true;
-        return SecurityHandler::$principal;
-    }
 
     public static function canAccess($request_path)
     {
@@ -64,7 +48,7 @@ class SecurityHandler
             return true;
         }
 
-        $currentUser = SecurityHandler::getCurrentUser();
+        $currentUser = SessionManager::getUser();
 
         foreach (SecurityHandler::SECURED_PAGES as $page => $role) {
             $ending = substr($request_path, strlen($request_path) - strlen($page));
@@ -94,14 +78,9 @@ class SecurityHandler
         return false;
     }
 
-    private static function loadUserData()
-    {
-        return SecurityHandler::$principal = new User();
-    }
-
     private static function handleAccessDenied()
     {
-        $status_code = SecurityHandler::$authenticated ? 403 : 401;
+        $status_code = SecurityHandler::isAuthenticated() ? 403 : 401;
 
         switch ($status_code) {
             case 403:

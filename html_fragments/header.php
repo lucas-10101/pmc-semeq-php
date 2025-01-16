@@ -2,28 +2,40 @@
 
 require __DIR__ . "/../autoload.php";
 
-use classes\AuthenticationHandler;
 use classes\SecurityHandler;
-use dao\SellerDAO;
-use dao\ClientDAO;
+use classes\SessionManager;
 
-$name = "";
+$person = SessionManager::getUserPerson();
+
 ?>
 
 <nav class="navbar navbar-expand-lg bg-body-tertiary px-5">
     <ul class="navbar-nav">
-        <li class="nav-item <?= empty($name) ? "d-none" : ""?>">
-            <span><?= $name ?></span>
+        <li class="nav-item border-end rounded<?= $person == null ? "d-none" : "" ?>">
+            <span class="nav-link fw-bold"><?= $person != null ? 'Bem vindo ' . $person->name : "" ?></span>
         </li>
         <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="/index.php">Home</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" aria-current="page" href="/login.php">Login</a>
+            <a class="nav-link" href="/index.php">Home</a>
         </li>
 
-        <?php ?>
+        <?php if (!SecurityHandler::isAuthenticated()) { ?>
+            <li class="nav-item">
+                <a class="nav-link" href="/login.php">Login</a>
+            </li>
+        <?php } else { ?>
+            <li class="nav-item">
+                <a class="nav-link" href="/logout.php">Logout</a>
+            </li>
+        <?php } ?>
 
-        <?php ?>
+        <?php if (SessionManager::getUser()->role = "SELLER") { ?>
+            <li class="nav-item">
+                <a class="nav-link" href="/pages/products.php">Produtos</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/pages/suppliers.php">Fornecedores</a>
+            </li>
+        <?php } ?>
+
     </ul>
 </nav>

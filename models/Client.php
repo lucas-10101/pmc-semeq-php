@@ -2,11 +2,11 @@
 
 namespace models;
 
-class Seller {
+class Client {
 
     public $id;
 
     public $name;
 
-    public $userId;
+    public $user_id;
 }

@@ -6,6 +6,8 @@ use dao\ClientDAO;
 use dao\SellerDAO;
 use models\User;
 
+error_reporting(E_ERROR);
+
 class SessionManager
 {
 
@@ -19,25 +21,23 @@ class SessionManager
     public static function setUser($user)
     {
         self::initSession();
-        self::setObject("user", $user);
 
-        echo "foi";
+        $person = null;
+
         switch ($user->role) {
             case 'SELLER':
                 $dao = new SellerDAO();
-                $seller = $dao->findByUserid($user->id);
-                $name = $seller->name;
+                $person = $dao->findByUserid($user->id);
                 break;
             case 'CLIENT':
                 $dao = new ClientDAO();
-                $client = $dao->findByUserid($user->id);
-                $name = $client->name;
+                $person = $dao->findByUserid($user->id);
                 break;
-
             default:
-                echo "falhou";
                 break;
         }
+        self::setObject("user", $user);
+        self::setObject("user-person", $person);
     }
 
 
@@ -46,25 +46,24 @@ class SessionManager
         return self::getObject("user");
     }
 
-    public static function isEnabled()
+    public static function getUserPerson()
     {
-        return session_status() != PHP_SESSION_NONE;
+        return self::getObject("user-person");
     }
 
     public static function initSession()
     {
-
-        if (!SessionManager::isEnabled()) {
-            session_name(SessionManager::SESSION_SCOPE);
-            session_start();
-        }
+        session_name(SessionManager::SESSION_SCOPE);
+        session_start();
     }
 
     public static function logout()
     {
-        if (session_status() === PHP_SESSION_ACTIVE) {
-            session_destroy();
-        }
+
+        self::initSession();
+        session_unset();
+        session_destroy();
+        $_SESSION = [];
 
         header("Location: /index.php");
         exit();
@@ -77,6 +76,10 @@ class SessionManager
 
     public static function getObject($keyName)
     {
-        return self::isEnabled() ? unserialize($_SESSION["$keyName"]) : null;
+        self::initSession();
+        if (array_key_exists($keyName, $_SESSION)) {
+            return unserialize($_SESSION["$keyName"]);
+        }
+        return null;
     }
 }
