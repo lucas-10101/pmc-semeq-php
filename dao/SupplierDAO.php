@@ -10,28 +10,27 @@ use classes\DatabaseConnection;
  * 
  * Pode ocorrer problemas de formatação caso a configuração do DB de teste estaja diferente.
  */
-class ProductDAO
+class SupplierDAO
 {
 
     /**
-     * Find product by user id
-     * @param mixed $productId
-     * @return bool|\models\Product
+     * Find supplier by user id
+     * @param mixed $supplierId
+     * @return bool|\models\Supplier
      */
-    public function findById($productId)
+    public function findById($supplierId)
     {
         try {
             $connection = DatabaseConnection::getConnection();
             $stm = $connection->prepare(<<<SQL
-                SELECT "id", "name", "price" FROM "Products" WHERE "id" = :product_id
+                SELECT "id", "name" FROM "Suppliers" WHERE "id" = :supplier_id
             SQL);
 
-            $stm->bindValue("product_id", $productId);
+            $stm->bindValue("supplier_id", $supplierId);
 
             $stm->execute();
 
             $product = $stm->fetchObject();
-            $product->price = floatval(str_replace(",", ".", str_replace(".", "", $product->price)));
 
             return $product;
         } catch (\Exception $e) {
@@ -49,16 +48,12 @@ class ProductDAO
         try {
             $connection = DatabaseConnection::getConnection();
             $stm = $connection->prepare(<<<SQL
-            SELECT "id", "name", "price" FROM "Products"
+            SELECT "id", "name" FROM "Suppliers"
         SQL);
 
             $stm->execute();
 
             $data = $stm->fetchAll(\PDO::FETCH_OBJ);
-
-            foreach ($data as $product) {
-                $product->price = floatval(str_replace(",", ".", str_replace(".", "", $product->price)));
-            }
 
             return $data;
         } catch (\Exception $e) {
@@ -68,17 +63,16 @@ class ProductDAO
     }
 
     /**
-     * Save or update the product based on entity "id" field
-     * @param \models\Product $product
+     * Save or update the supplier based on entity "id" field
+     * @param \models\Supplier $supplier
      * @return int
      */
-    public function save($product)
+    public function save($supplier)
     {
         try {
 
-            $id = is_int($product->id) ? intval($product->id) : 0;
-            $name = "$product->name";
-            $price = is_float($product->price) ? floatval($product->price) : 0.00;
+            $id = is_int($supplier->id) ? intval($supplier->id) : 0;
+            $name = "$supplier->name";
 
             $updating = is_int($id) && $id > 0;
 
@@ -87,28 +81,26 @@ class ProductDAO
             $connection->beginTransaction();
             if ($updating) {
                 $stm = $connection->prepare(<<<SQL
-                    UPDATE "Products" SET "name" = :name, "price" = :price WHERE "id" = :id
+                    UPDATE "Suppliers" SET "name" = :name WHERE "id" = :id
                 SQL);
 
 
                 $stm->bindValue("id", $id);
             } else {
                 $stm = $connection->prepare(<<<SQL
-                    INSERT INTO "Products" ("name", "price") VALUES (:name, :price)
+                    INSERT INTO "Suppliers" ("name") VALUES (:name)
                 SQL);
             }
 
             $stm->bindValue("name", $name);
-            $stm->bindValue("price", number_format($price, 2, ",", ""));
 
             if ($stm->execute()) {
 
                 $connection->commit();
 
                 if ($updating) {
-
                     $stm = $connection->prepare(<<<SQL
-                        SELECT MAX("id") FROM "Products"
+                        SELECT MAX("id") FROM "Suppliers"
                     SQL);
 
                     $stm->execute();
@@ -138,7 +130,7 @@ class ProductDAO
             $connection = DatabaseConnection::getConnection();
 
             $stm = $connection->prepare(<<<SQL
-                DELETE FROM "Products" WHERE "id" = :id
+                DELETE FROM "Suppliers" WHERE "id" = :id
             SQL);
 
             $stm->bindValue("id", $id);

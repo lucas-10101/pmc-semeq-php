@@ -15,17 +15,21 @@ class UserDAO
      */
     public function findByEmailAndPassword($email, $password)
     {
+        try {
+            $connection = DatabaseConnection::getConnection();
+            $stm = $connection->prepare(<<<SQL
+                SELECT "id", "email", "role" FROM "Users" WHERE "email" = :email AND "password" = :password
+            SQL);
 
-        $connection = DatabaseConnection::getConnection();
-        $stm = $connection->prepare(<<<SQL
-            SELECT "id", "email", "role" FROM "Users" WHERE "email" = :email AND "password" = :password
-        SQL);
+            $stm->bindValue("email", $email);
+            $stm->bindValue("password", $password);
 
-        $stm->bindValue("email", $email);
-        $stm->bindValue("password", $password);
+            $stm->execute();
 
-        $stm->execute();
-
-        return $stm->fetchObject();
+            return $stm->fetchObject();
+        } catch (\Exception $e) {
+            header("Location: /error.php");
+            exit;
+        }
     }
 }

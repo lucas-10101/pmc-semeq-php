@@ -8,7 +8,7 @@
 
 <body>
     <div class="container p-4 mt-5 border rounded bg-danger text-center">
-        <h1>A aplicação encontra-se indisponível no momento</h1>
+        <h1>Um erro inesperado ocorreu</h1>
         <hr>
 
         <p>

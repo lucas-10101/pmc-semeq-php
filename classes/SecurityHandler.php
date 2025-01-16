@@ -23,6 +23,8 @@ class SecurityHandler
     const SECURED_PAGES = array(
         '/pages/sales.php' => 'SELLER',
         '/pages/products.php' => 'SELLER',
+        '/pages/suppliers.php' => 'SELLER',
+        '/pages/product_supplier.php'=> 'SELLER',
         '/pages/purchases.php' => 'CLIENT'
     );
 

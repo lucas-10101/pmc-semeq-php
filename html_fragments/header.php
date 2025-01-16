@@ -28,12 +28,16 @@ $person = SessionManager::getUserPerson();
             </li>
         <?php } ?>
 
-        <?php if (SessionManager::getUser()->role = "SELLER") { ?>
+        <?php
+        if (SecurityHandler::isAuthenticated() && SessionManager::getUser()->role = "SELLER") { ?>
             <li class="nav-item">
                 <a class="nav-link" href="/pages/products.php">Produtos</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="/pages/suppliers.php">Fornecedores</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/pages/product_supplier.php">Produto x Fornecedor</a>
             </li>
         <?php } ?>
 

@@ -13,61 +13,53 @@
 <br><br><br>
 
 <div class="container-fluid rounded mx-auto w-75 p-3 bg-body-secondary text-center">
-    <h1 class="p-2">Cadastro de produtos</h1>
+    <h1 class="p-2">Cadastro de fornecedores</h1>
     <hr>
     <form action="#" method="post" class="row justify-content-around">
 
         <?php
 
-        $productDao = new dao\ProductDAO();
+        $supplierDao = new dao\SupplierDAO();
 
-        $product = new stdClass();
+        $supplier = new stdClass();
 
         if ($_POST["acao"] == "salvar") {
 
-            $toSave = new models\Product();
+            $toSave = new models\Supplier();
 
-            $toSave->id = intval(filter_input(INPUT_POST, "product_id", FILTER_SANITIZE_NUMBER_INT));
+            $toSave->id = intval(filter_input(INPUT_POST, "supplier_id", FILTER_SANITIZE_NUMBER_INT));
             $toSave->name = filter_input(INPUT_POST, "name", FILTER_SANITIZE_STRING);
-            $toSave->price = floatval(filter_input(INPUT_POST, "price", FILTER_SANITIZE_STRING));
 
-            $result = $productDao->save($toSave);
+            $result = $supplierDao->save($toSave);
             if ($result != -1 && !(is_int($toSave->id) && $toSave->id > 0)) {
                 header("Location: " . $_SERVER['PHP_SELF']);
                 exit;
             }
         } else if ($_POST["acao"] == "excluir") {
 
-            $id = intval(filter_input(INPUT_POST, "product_id", FILTER_SANITIZE_NUMBER_INT));
+            $id = intval(filter_input(INPUT_POST, "supplier_id", FILTER_SANITIZE_NUMBER_INT));
             if (is_int($id)) {
-                $productDao->delete($id);
+                $supplierDao->delete($id);
                 header("Location: " . $_SERVER['PHP_SELF']);
                 exit;
             }
         }
 
-        if ($_POST["acao"] != "limpar" && isset($_GET["id"]) && !empty($_GET["id"]) && ($productId = intval($_GET["id"]))) {
-            $product = $productDao->findById($productId);
+        if ($_POST["acao"] != "limpar" && isset($_GET["id"]) && !empty($_GET["id"]) && ($supplier = intval($_GET["id"]))) {
+            $supplier = $supplierDao->findById($supplier);
         }
         ?>
 
         <div class="col-2">
             <div class="input-group">
                 <span class="input-group-text">Id</span>
-                <input type="number" readonly class="form-control" name="product_id" value="<?= $product->id ?>">
+                <input type="number" readonly class="form-control" name="supplier_id" value="<?= $supplier->id ?>">
             </div>
         </div>
-        <div class="col-7">
+        <div class="col-9">
             <div class="input-group">
                 <span class="input-group-text">Nome</span>
-                <input type="text" class="form-control" name="name" value="<?= $product->name ?>" required>
-            </div>
-        </div>
-        <div class="col-3">
-            <div class="input-group">
-                <span class="input-group-text">Valor</span>
-                <input class="form-control" name="price" type="number" value="<?= $product->price ?>" step="0.01"
-                    required>
+                <input type="text" class="form-control" name="name" value="<?= $supplier->name ?>" required>
             </div>
         </div>
         <div class="col-12 mt-5">
@@ -86,22 +78,20 @@
             <tr>
                 <th>Id</th>
                 <th class="w-75">Nome</th>
-                <th>Valor</th>
                 <th></th>
             </tr>
         </thead>
         <tbody>
             <?php
-            $list = $productDao->findAll();
+            $list = $supplierDao->findAll();
 
-            foreach ($list as $product) {
+            foreach ($list as $supplier) {
                 ?>
                 <tr>
-                    <th><?= $product->id ?></th>
-                    <td class="w-75"><?= $product->name ?></td>
-                    <td><?= "R$ " . number_format($product->price, 2) ?> </td>
+                    <th><?= $supplier->id ?></th>
+                    <td class="w-75"><?= $supplier->name ?></td>
                     <td>
-                        <a href="?id=<?= $product->id ?>" class="btn btn-warning">Alterar</a>
+                        <a href="?id=<?= $supplier->id ?>" class="btn btn-warning">Alterar</a>
                     </td>
                 </tr>
                 <?php
