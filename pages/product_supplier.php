@@ -54,7 +54,7 @@
         ?>
         <div class="col-5">
             <div class="input-group">
-                <span class="input-group-text">Produto</span>
+                <span class="input-group-text">Produtos</span>
                 <div class="form-control">
                     <select class="select2 w-100" size="size=" 2" name="product_id" required>
                         <?php

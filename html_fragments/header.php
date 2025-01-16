@@ -40,7 +40,7 @@ $person = SessionManager::getUserPerson();
                 <a class="nav-link" href="/pages/product_supplier.php">Produto x Fornecedor</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="/pages/sale.php">Vendas</a>
+                <a class="nav-link" href="/pages/new_sale.php">Nova Venda</a>
             </li>
         <?php } ?>
 

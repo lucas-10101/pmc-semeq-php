@@ -21,11 +21,11 @@ class SecurityHandler
     );
 
     const SECURED_PAGES = array(
-        '/pages/sales.php' => 'SELLER',
+        '/pages/sales.php' => 'AUTHENTICATED',
+        '/pages/new_sale.php' => 'SELLER',
         '/pages/products.php' => 'SELLER',
         '/pages/suppliers.php' => 'SELLER',
-        '/pages/product_supplier.php'=> 'SELLER',
-        '/pages/purchases.php' => 'CLIENT'
+        '/pages/product_supplier.php' => 'SELLER',
     );
 
     /**
@@ -55,7 +55,7 @@ class SecurityHandler
         foreach (SecurityHandler::SECURED_PAGES as $page => $role) {
             $ending = substr($request_path, strlen($request_path) - strlen($page));
 
-            if ($ending == $page && $currentUser->role == $role) {
+            if ($ending == $page && ($currentUser->role == $role || $role == "AUTHENTICATED")) {
                 return true;
             }
         }
