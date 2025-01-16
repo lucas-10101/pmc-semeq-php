@@ -39,6 +39,9 @@ $person = SessionManager::getUserPerson();
             <li class="nav-item">
                 <a class="nav-link" href="/pages/product_supplier.php">Produto x Fornecedor</a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/pages/sale.php">Vendas</a>
+            </li>
         <?php } ?>
 
     </ul>

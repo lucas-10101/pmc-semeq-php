@@ -13,6 +13,46 @@ use classes\DatabaseConnection;
 class ProductSupplierDAO
 {
 
+
+    /**
+     * Find product supplier by id
+     * @param int $productId
+     * @param int $supplierId
+     * @return bool|\models\ProductSupplier
+     */
+    public function findById($productId, $supplierId)
+    {
+        try {
+            $connection = DatabaseConnection::getConnection();
+            $stm = $connection->prepare(<<<SQL
+                SELECT
+                    PS."product_id",
+                    P."name" AS "product_name",
+                    PS."supplier_id",
+                    S."name" AS "supplier_name"
+                FROM 
+                    "Product_Suppliers" PS
+                    INNER JOIN "Products" P ON P."id" = PS."product_id"
+                    INNER JOIN "Suppliers" S ON S."id" = PS."supplier_id"
+                WHERE
+                    PS."product_id" = :product_id AND
+                    PS."supplier_id" = :supplier_id
+            SQL);
+
+            $stm->bindValue("product_id", $productId);
+            $stm->bindValue("supplierId", $supplierId);
+
+            $stm->execute();
+
+            $product = $stm->fetchObject();
+
+            return $product;
+        } catch (\Exception $e) {
+            header("Location: /error.php");
+            exit;
+        }
+    }
+
     /**
      * Summary of findAll
      * @return array
@@ -46,19 +86,50 @@ class ProductSupplierDAO
 
     /**
      * Save or update the supplier based on entity "id" field
-     * @param \models\ProductSupplier $supplier
-     * @return int
+     * @param \models\ProductSupplier $productSupplier
+     * @return bool
      */
-    public function save($supplier)
+    public function save($productSupplier)
     {
         try {
 
             $connection = DatabaseConnection::getConnection();
             $stm = $connection->prepare(<<<SQL
+                SELECT
+                    COUNT(*) AS "count"
+                FROM 
+                    "Product_Suppliers" PS
+                    INNER JOIN "Products" P ON P."id" = PS."product_id"
+                    INNER JOIN "Suppliers" S ON S."id" = PS."supplier_id"
+                WHERE
+                    PS."product_id" = :product_id AND
+                    PS."supplier_id" = :supplier_id
             SQL);
 
-            $stm->execute();
+            $stm->bindValue("product_id", $productSupplier->product_id);
+            $stm->bindValue("supplier_id", $productSupplier->supplier_id);
+
+            if ($stm->execute()) {
+                $countResult = $stm->fetchColumn(0);
+                if ($countResult == 1) {
+                    return true;
+                }
+
+                $stm = $connection->prepare(<<<SQL
+                    INSERT INTO "Product_Suppliers" ("product_id", "supplier_id") VALUES(:product_id, :supplier_id)
+                SQL);
+
+                $stm->bindValue("product_id", $productSupplier->product_id);
+                $stm->bindValue("supplier_id", $productSupplier->supplier_id);
+
+                return $stm->execute() != false;
+            }
+
+            return false;
+
         } catch (\Exception $e) {
+
+            //die(var_dump($e));
             header("Location: /error.php");
             exit;
         }
@@ -67,19 +138,21 @@ class ProductSupplierDAO
 
     /**
      * Delete the product
-     * @param int $id
+     * @param \models\ProductSupplier $productSupplier
      * @return void
      */
-    public function delete($id)
+    public function delete($productSupplier)
     {
         try {
+
             $connection = DatabaseConnection::getConnection();
 
             $stm = $connection->prepare(<<<SQL
-                DELETE FROM "Suppliers" WHERE "id" = :id
+                DELETE FROM "Product_Suppliers" WHERE "product_id" = :product_id AND "supplier_id" = :supplier_id 
             SQL);
 
-            $stm->bindValue("id", $id);
+            $stm->bindValue("product_id", $productSupplier->product_id);
+            $stm->bindValue("supplier_id", $productSupplier->supplier_id);
 
             $stm->execute();
         } catch (\Exception $e) {
