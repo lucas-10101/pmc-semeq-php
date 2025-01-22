@@ -3,6 +3,7 @@
 namespace dao;
 
 use classes\DatabaseConnection;
+use PDO;
 
 class ClientDAO
 {
@@ -24,7 +25,9 @@ class ClientDAO
 
             $stm->execute();
 
-            return $stm->fetchObject();
+            $result = $stm->fetchObject();
+
+            return $result;
         } catch (\Exception $e) {
             header("Location: /error.php");
             exit;

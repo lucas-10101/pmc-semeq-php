@@ -33,7 +33,7 @@ $person = SessionManager::getUserPerson();
         <?php } ?>
 
         <?php
-        if (SecurityHandler::isAuthenticated() && SessionManager::getUser()->role = "SELLER") { ?>
+        if (SecurityHandler::isAuthenticated() && SessionManager::getUser()->role == "SELLER") { ?>
             <li class="nav-item">
                 <a class="nav-link" href="/pages/products.php">Produtos</a>
             </li>

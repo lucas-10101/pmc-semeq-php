@@ -14,4 +14,4 @@ $clientId = $user->role == "CLIENT" ? $person->id : -1;
 
 $sellDAO = new \dao\SaleDAO();
 
-echo json_encode($sellDAO->listAll());
+echo json_encode($sellDAO->listAll($clientId));

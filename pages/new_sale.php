@@ -6,7 +6,7 @@
     <title>Sistema de vendas</title>
 </head>
 
-<body>
+<body class="w-100">
 
 
     <?php
@@ -21,20 +21,20 @@
     <div class="container-fluid rounded mx-auto w-75 p-3 bg-body-secondary text-center">
         <form action="#" method="post" class="row justify-content-start p-3">
             <h1 class="col-12 p-4 mb-5 border-bottom border-3 border-dark-subtle">Lançamento de venda</h1>
-            <div class="col-3">
+            <div class="col-12 col-md-3">
                 <div class="input-group">
                     <span class="input-group-text">Venda nº</span>
                     <input type="text" readonly class="form-control shadow-none" value="">
                 </div>
             </div>
-            <div class="col-3">
+            <div class="col-12 col-md-3">
                 <div class="input-group">
                     <span class="input-group-text">Data Venda</span>
                     <input type="date" required class="form-control shadow-none" name="sell_date"
                         value="<?= date("Y-m-d") ?>">
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-md-6">
                 <div class="input-group">
                     <span class="input-group-text">Vendedor</span>
                     <input type="text" readonly class="form-control shadow-none" name="seller_name"
@@ -42,7 +42,7 @@
                 </div>
             </div>
             <span class="col-12 my-2"></span>
-            <div class="col-8">
+            <div class="col-12 col-md-8">
                 <div class="input-group">
                     <span class="input-group-text">Cliente</span>
                     <div class="form-control">
@@ -51,7 +51,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-4">
+            <div class="col-12 col-md-4">
                 <div class="input-group">
                     <span class="input-group-text">Total</span>
                     <input type="text" readonly class="form-control shadow-none" id="total" value="R$ 0.00">
@@ -60,7 +60,7 @@
 
             <h1 class="col-12 p-4 my-5 border-bottom border-3 border-dark-subtle">Dados para entrega</h1>
 
-            <div class="col-3">
+            <div class="col-12 col-md-3">
                 <div class="input-group">
                     <span class="input-group-text">CEP</span>
                     <input type="text" required title="Formato 00000-000" class="form-control shadow-none"
@@ -69,21 +69,21 @@
                 </div>
             </div>
             <span class="col-12 my-2"></span>
-            <div class="col-2">
+            <div class="col-12 col-md-2">
                 <div class="input-group">
                     <span class="input-group-text">Nº</span>
                     <input type="number" required class="form-control shadow-none" address-form-data name="house_number"
                         min=1 value="">
                 </div>
             </div>
-            <div class="col-6">
+            <div class="col-12 col-md-6">
                 <div class="input-group">
                     <span class="input-group-text">Logradouro</span>
                     <input type="text" required class="form-control shadow-none" name="street" address-form-data
                         value="">
                 </div>
             </div>
-            <div class="col-4">
+            <div class="col-12 col-md-4">
                 <div class="input-group">
                     <span class="input-group-text">Bairro</span>
                     <input type="text" required class="form-control shadow-none" name="district" address-form-data
@@ -91,14 +91,14 @@
                 </div>
             </div>
             <span class="col-12 my-2"></span>
-            <div class="col-4">
+            <div class="col-12 col-md-4">
                 <div class="input-group">
                     <span class="input-group-text">Estado</span>
                     <input type="text" required class="form-control shadow-none" name="state" address-form-data
                         value="">
                 </div>
             </div>
-            <div class="col-4">
+            <div class="col-12 col-md-4">
                 <div class="input-group">
                     <span class="input-group-text">Cidade</span>
                     <input type="text" required class="form-control shadow-none" name="city" address-form-data value="">
@@ -112,7 +112,7 @@
 
             <h1 class="col-12 p-4 my-5 border-bottom border-3 border-dark-subtle">Adicionar produtos</h1>
 
-            <div class="col-8">
+            <div class="col-12 col-md-8">
                 <div class="input-group">
                     <span class="input-group-text">Produto</span>
                     <div class="form-control">
@@ -122,14 +122,14 @@
                     </div>
                 </div>
             </div>
-            <div class="col-2">
+            <div class="col-12 col-md-2">
                 <div class="input-group">
                     <span class="input-group-text">Itens</span>
                     <input type="number" class="form-control shadow-none" id="product-selection-quantity" min=1
                         value="1">
                 </div>
             </div>
-            <div class="col-2">
+            <div class="col-12 col-md-2">
                 <button class="btn btn-success w-100" onclick="addSelectedProductToCart()"
                     type="button">Adicionar</button>
             </div>
@@ -148,8 +148,8 @@
 
             <h1 class="col-12 p-4 my-5 border-bottom border-3 border-dark-subtle">Carrinho</h1>
 
-            <div class="col-12 mt-4">
-                <table class="table table-striped">
+            <div class="col-12 mt-4 p-0 p-md-1">
+                <table class="table table-striped w-100">
                     <thead>
                         <tr>
                             <th>Produto</th>
@@ -167,7 +167,7 @@
 
 
             <div class="col-12 mt-5">
-                <button class="btn btn-success col-3" name="acao" value="salvar" type="button"
+                <button class="btn btn-success col-12 col-md-3" name="acao" value="salvar" type="button"
                     onclick="saveSell()">Gerar Venda</button>
             </div>
         </form>
