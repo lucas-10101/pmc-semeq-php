@@ -42,7 +42,7 @@
                 </div>
             </div>
             <span class="col-12 my-2"></span>
-            <div class="col-6">
+            <div class="col-8">
                 <div class="input-group">
                     <span class="input-group-text">Cliente</span>
                     <div class="form-control">
@@ -51,14 +51,21 @@
                     </div>
                 </div>
             </div>
+            <div class="col-4">
+                <div class="input-group">
+                    <span class="input-group-text">Total</span>
+                    <input type="text" readonly class="form-control shadow-none" id="total" value="R$ 0.00">
+                </div>
+            </div>
 
             <h1 class="col-12 p-4 my-5 border-bottom border-3 border-dark-subtle">Dados para entrega</h1>
 
             <div class="col-3">
                 <div class="input-group">
                     <span class="input-group-text">CEP</span>
-                    <input type="text" required title="Formato 00000-000" class="form-control shadow-none" name="postal_code"
-                        value="" previous="" oninput="postalCodeFieldAutocomplete(event)" minlength="9" maxlength="9">
+                    <input type="text" required title="Formato 00000-000" class="form-control shadow-none"
+                        name="postal_code" value="" previous="" oninput="postalCodeFieldAutocomplete(event)"
+                        minlength="9" maxlength="9">
                 </div>
             </div>
             <span class="col-12 my-2"></span>

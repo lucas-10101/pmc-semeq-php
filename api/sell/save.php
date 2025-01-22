@@ -2,25 +2,26 @@
 
 require_once __DIR__ . "/../../autoload.php";
 use classes\AuthenticationHandler;
+use classes\SessionManager;
 AuthenticationHandler::verify();
 
 header("Content-Type: application/json");
 
 $jsonData = json_decode(file_get_contents("php://input"), true);
-$sanitized = new stdClass();
+$sanitized = new \models\Sell();
 
 // sanitization of input
-$postalCode = filter_var("postal_code", FILTER_SANITIZE_STRING);
-
-$sanitized->houseNumber = filter_var($jsonData["house_number"], FILTER_SANITIZE_NUMBER_INT) or die(http_response_code(400));
+$sanitized->postal_code = filter_var($jsonData["postal_code"], FILTER_SANITIZE_STRING);
+$sanitized->street_number = filter_var($jsonData["house_number"], FILTER_SANITIZE_NUMBER_INT) or die(http_response_code(400));
 $sanitized->street = filter_var($jsonData["street"], FILTER_SANITIZE_STRING) or die(http_response_code(400));
 $sanitized->district = filter_var($jsonData["district"], FILTER_SANITIZE_STRING) or die(http_response_code(400));
-$sanitized->cityName = filter_var($jsonData["city"], FILTER_SANITIZE_STRING) or die(http_response_code(400));
+$sanitized->city = filter_var($jsonData["city"], FILTER_SANITIZE_STRING) or die(http_response_code(400));
 $sanitized->state = filter_var($jsonData["state"], FILTER_SANITIZE_STRING) or die(http_response_code(400));
 $sanitized->complement = filter_var($jsonData["complement"], FILTER_SANITIZE_STRING) or die(http_response_code(400));
 
-$sanitized->clientId = filter_var($jsonData["client_id"], FILTER_SANITIZE_NUMBER_INT) or die(http_response_code(400));
-$sanitized->sellDate = filter_var($jsonData["sell_date"], FILTER_SANITIZE_STRING) or die(http_response_code(400));
+$sanitized->client_id = filter_var($jsonData["client_id"], FILTER_SANITIZE_NUMBER_INT) or die(http_response_code(400));
+$sanitized->sale_date = filter_var($jsonData["sell_date"], FILTER_SANITIZE_STRING) or die(http_response_code(400));
+$sanitized->seller_id = SessionManager::getUserPerson()->id;
 
 $sanitized->items = array();
 if (isset($jsonData["items"]) && is_array($jsonData["items"])) {
@@ -37,9 +38,11 @@ if (isset($jsonData["items"]) && is_array($jsonData["items"])) {
 }
 
 // pattern validation
-preg_match("/^[0-9]{5}-[0-9]{3}$/", $postalCode, $matches) === 1 or die(http_response_code(400));
-preg_match("/^[0-9]{5}-[0-9]{3}$/", $postalCode, $matches) === 1 or die(http_response_code(400));
+preg_match("/^[0-9]{5}-[0-9]{3}$/", $sanitized->postal_code, $matches) === 1 or die(http_response_code(400));
+preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/", $sanitized->sale_date, $matches) === 1 or die(http_response_code(400));
 
+$sellDAO = new \dao\SellDAO();
+$sellDAO->save($sanitized);
 
 echo json_encode($sanitized);
 

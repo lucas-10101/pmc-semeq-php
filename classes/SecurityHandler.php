@@ -10,8 +10,6 @@ use models\User;
 class SecurityHandler
 {
 
-    static $principal = null;
-
     const PUBLIC_PAGES = array(
         "/",
         "/index.php",

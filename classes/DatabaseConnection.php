@@ -28,6 +28,10 @@ class DatabaseConnection
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
     );
 
+    /**
+     * 
+     * @return \PDO
+     */
     public static function getConnection()
     {
         if (DatabaseConnection::$connection == null) {

@@ -60,23 +60,31 @@ CREATE TABLE "Product_Suppliers" (
 );
 commit;
 
+CREATE TABLE "Address" (
+    "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    "postal_code" VARCHAR(9) NOT NULL,
+    "street_number" INT NOT NULL,
+    "street" VARCHAR(200) NOT NULL,
+    "district" VARCHAR(64) NOT NULL,
+    "state" VARCHAR(2) NOT NULL,
+    "city" VARCHAR(96) NOT NULL,
+    "complement" VARCHAR(200) NOT NULL
+);
 
-SELECT
-    PS."product_id",
-    P."name" AS "product_name",
-    PS."supplier_id",
-    S."name" AS "supplier_name"
-FROM 
-    "Product_Suppliers" PS
-    INNER JOIN "Products" P ON P."id" = PS."product_id"
-    INNER JOIN "Suppliers" S ON S."id" = PS."supplier_id"
-    
+CREATE TABLE "Sales" (
+    "id" INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    "sale_date" DATE NOT NULL,
+    "client_id" INT REFERENCES "Clients"("id") NOT NULL,
+    "seller_id" INT REFERENCES "Sellers"("id") NOT NULL,
+    "total" DECIMAL(12,2) NOT NULL,
+    "address_id" INT REFERENCES "Address"("id") NOT NULL
+);
 
-SELECT
-    COUNT(*) AS "count"
-FROM 
-    "Product_Suppliers" PS
-    INNER JOIN "Products" P ON P."id" = PS."product_id"
-    INNER JOIN "Suppliers" S ON S."id" = PS."supplier_id"
-    
-INSERT INTO "Product_Suppliers" ("product_id", "supplier_id") VALUES()
+CREATE TABLE "Sale_Products" (
+    "sale_id" INT NOT NULL REFERENCES "Sales"("id"),
+    "product_id" INT NOT NULL REFERENCES "Products"("id"),
+    "quantity" INT NOT NULL,
+    CONSTRAINT "Sell_Products_PK" PRIMARY KEY ("sale_id", "product_id")
+);
+
+commit;
