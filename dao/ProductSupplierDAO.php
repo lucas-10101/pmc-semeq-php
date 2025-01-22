@@ -3,6 +3,7 @@
 namespace dao;
 
 use classes\DatabaseConnection;
+use PDO;
 
 /**
  * 
@@ -155,6 +156,42 @@ class ProductSupplierDAO
             $stm->bindValue("supplier_id", $productSupplier->supplier_id);
 
             $stm->execute();
+        } catch (\Exception $e) {
+            header("Location: /error.php");
+            exit;
+        }
+    }
+
+
+    /**
+     * Find suppliers by product id
+     * @param int $productId
+     * @return array |\models\ProductSupplier
+     */
+    public function findSuppliersByProductId($productId)
+    {
+        try {
+            $connection = DatabaseConnection::getConnection();
+            $stm = $connection->prepare(<<<SQL
+                SELECT
+                    PS."product_id",
+                    P."name" AS "product_name",
+                    PS."supplier_id",
+                    S."name" AS "supplier_name"
+                FROM 
+                    "Product_Suppliers" PS
+                    INNER JOIN "Products" P ON P."id" = PS."product_id"
+                    INNER JOIN "Suppliers" S ON S."id" = PS."supplier_id"
+                WHERE
+                    PS."product_id" = :product_id
+            SQL);
+
+            $stm->bindValue("product_id", $productId);
+            $stm->execute();
+
+            $suppliers = $stm->fetchAll(PDO::FETCH_OBJ);
+
+            return $suppliers;
         } catch (\Exception $e) {
             header("Location: /error.php");
             exit;

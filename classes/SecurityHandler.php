@@ -26,6 +26,10 @@ class SecurityHandler
         '/pages/products.php' => 'SELLER',
         '/pages/suppliers.php' => 'SELLER',
         '/pages/product_supplier.php' => 'SELLER',
+        '/api/autocomplete/clients_autocomplete.php' => 'SELLER',
+        '/api/suppliers/list_by_product.php' => 'SELLER',
+        '/api/autocomplete/products_autocomplete.php' => 'AUTHENTICATED',
+        '/api/sell/save.php' => 'SELLER',
     );
 
     /**

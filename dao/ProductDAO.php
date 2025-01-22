@@ -149,4 +149,33 @@ class ProductDAO
             exit;
         }
     }
+
+    /**
+     * Return all products by name (non-paged)
+     * @param string $name
+     * @return array
+     */
+    public function findAllByName($name)
+    {
+        try {
+            $connection = DatabaseConnection::getConnection();
+            $stm = $connection->prepare(<<<SQL
+                SELECT "id", "name", "price" FROM "Products" WHERE UPPER("name") LIKE '%' || UPPER(:name) || '%'
+            SQL);
+
+            $stm->bindValue("name", $name);
+            $stm->execute();
+
+            $data = $stm->fetchAll(\PDO::FETCH_OBJ);
+
+            foreach ($data as $product) {
+                $product->price = floatval(str_replace(",", ".", str_replace(".", "", $product->price)));
+            }
+
+            return $data;
+        } catch (\Exception $e) {
+            header("Location: /error.php");
+            exit;
+        }
+    }
 }

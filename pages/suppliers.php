@@ -88,7 +88,7 @@
             foreach ($list as $supplier) {
                 ?>
                 <tr>
-                    <th><?= $supplier->id ?></th>
+                    <td><?= $supplier->id ?></td>
                     <td class="w-75"><?= $supplier->name ?></td>
                     <td>
                         <a href="?id=<?= $supplier->id ?>" class="btn btn-warning">Alterar</a>

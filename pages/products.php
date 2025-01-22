@@ -97,7 +97,7 @@
             foreach ($list as $product) {
                 ?>
                 <tr>
-                    <th><?= $product->id ?></th>
+                    <td><?= $product->id ?></td>
                     <td class="w-75"><?= $product->name ?></td>
                     <td><?= "R$ " . number_format($product->price, 2) ?> </td>
                     <td>
