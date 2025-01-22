@@ -28,6 +28,7 @@ class SecurityHandler
         '/api/suppliers/list_by_product.php' => 'SELLER',
         '/api/autocomplete/products_autocomplete.php' => 'AUTHENTICATED',
         '/api/sell/save.php' => 'SELLER',
+        '/api/sell/list.php' => 'AUTHENTICATED'
     );
 
     /**

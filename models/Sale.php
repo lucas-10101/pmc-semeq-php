@@ -2,7 +2,7 @@
 
 namespace models;
 
-class Sell
+class Sale
 {
 
     public $id;

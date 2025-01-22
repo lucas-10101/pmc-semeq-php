@@ -2,54 +2,66 @@
 <html>
 
 <head>
-    <?php require_once __DIR__ . "/html_fragments/html_head.php"; ?>
+    <?php require_once __DIR__ . "/../html_fragments/html_head.php"; ?>
+    <script defer src="/pages/scripts/sales.js"></script>
     <title>Sistema de vendas</title>
 </head>
 
 <body>
-</body>
-<?php include_once __DIR__ . "/../../html_fragments/header.php"; ?>
-<h1 class="p-2">Produtos x Fornecedores</h1>
-<hr>
-<form action="#" method="post" class="row justify-content-around">
-    <div class="col-12 mt-5">
+    <?php include_once __DIR__ . "/../html_fragments/header.php"; ?>
+    <br><br><br>
 
-        <div class="col-5">
-            <div class="input-group">
-                <span class="input-group-text">Produto</span>
-                <div class="form-control">
-                    <select class="select2 w-100" size="size=" 2" name="product_id" required>
-                        <?php
-                        $productDao = new dao\ProductDAO();
+    <div class="container-fluid rounded mx-auto w-75 p-3 bg-body-secondary text-center">
+        <h1 class="p-2">Histórico de vendas</h1>
+        <hr>
+        <div class="accordion" id="salesList">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                        <h6>
+                            Venda nº 11 - Data da venda: 21/01/2024 - Total: R$ 12005.00
+                            <br>
+                            Cliente: Lucas Rafael de Quadros
+                        </h6>
+                    </button>
+                </h2>
+                <div id="collapseThree" class="accordion-collapse collapse" data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Produto</th>
+                                    <th>Quantidade</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Tv</td>
+                                    <td>10 Un</td>
+                                </tr>
+                                <tr>
+                                    <td>Celular</td>
+                                    <td>3 Un</td>
+                                </tr>
+                                <tr>
+                                    <td>Carro</td>
+                                    <td>4 Un</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <hr>
+                        <div class="container-fluid border border-black rounded">
+                            <h2 class="text-center bg-body-secondary m-2 p-1 rounded">Entrega</h2>
+                            <h4 class="text-start"> Cidade: Limeira/SP - 13485-075 | Endereço: 106, Iolando Donnati</h4>
+                            <h4 class="text-start"> Complemento: teste teste teste</h4>
 
-                        $products = $productDao->findAll();
-                        foreach ($products as $product) {
-
-                            $selected = false;
-                            if ((is_object($productSupplier) && $productSupplier->product_id == $product->id) || $_GET['product_id'] == $product->id) {
-                                $selected = true;
-                            }
-
-                            ?>
-                            <option value="<?= $product->id ?>" <?= $selected ? 'selected' : '' ?>>
-                                <?= $product->name ?>
-                            </option>
-                            <?php
-                        }
-                        ?>
-                    </select>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-
-        <div class="row justify-content-center">
-            <button type="submit" class="btn btn-success col-3" name="acao" value="salvar">Salvar</button>
-            <span class="col-1"></span>
-            <button type="submit" class="btn btn-danger col-3" name="acao" value="excluir">Excluir</button>
-            <span class="col-1"></span>
-            <a href="?id=" class="btn btn-primary col-3" name="acao" value="limpar">Novo</a>
-        </div>
     </div>
-</form>
+</body>
 
 </html>

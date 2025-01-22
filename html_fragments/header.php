@@ -26,6 +26,10 @@ $person = SessionManager::getUserPerson();
             <li class="nav-item">
                 <a class="nav-link" href="/logout.php">Logout</a>
             </li>
+
+            <li class="nav-item">
+                <a class="nav-link" href="/pages/sales.php">Historico de vendas</a>
+            </li>
         <?php } ?>
 
         <?php

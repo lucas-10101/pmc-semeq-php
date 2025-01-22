@@ -11,12 +11,12 @@ use PDO;
  * 
  * Pode ocorrer problemas de formatação caso a configuração do DB de teste estaja diferente.
  */
-class SellDAO
+class SaleDAO
 {
 
     /**
      * Insert the address, sale, products and then update sale total field based on products.
-     * @param \models\Sell $sell
+     * @param \models\Sale $sell
      * @return bool true if insert is ok
      */
     public function save($sell)
@@ -95,6 +95,7 @@ class SellDAO
                         "Sales" S
                         INNER JOIN "Sale_Products" SP ON SP."sale_id" = S."id"
                         INNER JOIN "Products" P ON P."id" = SP."product_id"
+                    WHERE S."id" = "Sales"."id"
                 ) WHERE "Sales"."id" = (SELECT MAX("id") FROM "Sales")
             SQL);
 
@@ -112,6 +113,105 @@ class SellDAO
                 $connection->rollBack();
             }
 
+            header("Location: /error.php");
+            exit;
+        }
+    }
+
+    /**
+     * List all sales, can be filtered by client
+     * @param int $clientId Id of client
+     * @return array|false
+     */
+    public function listAll($clientId = -1)
+    {
+        try {
+
+            $connection = DatabaseConnection::getConnection();
+
+            $stm = $connection->prepare(<<<SQL
+                SELECT
+                    SALE."id" AS "saleId",
+                    SALE."total",
+                    TO_CHAR(SALE."sale_date", 'DD/MM/YYYY') AS "saleDate",
+
+                    SALE."client_id",
+                    CLIENT."name" AS "clientName",
+
+                    SALE."seller_id",
+                    SELLER."name" AS "sellerName",
+
+                    SALE."address_id",
+                    ADDR."postal_code" AS "addressPostalCode",
+                    ADDR."street_number" AS "addressStreetNumber",
+                    ADDR."street" AS "addressStreet",
+                    ADDR."district" AS "addressDistrict",
+                    ADDR."city" AS "addressCity",
+                    ADDR."state" AS "addressState",
+                    ADDR."complement" AS "addressComplement"
+                FROM
+                    "Sales" SALE
+                    INNER JOIN "Clients" CLIENT ON CLIENT."id" = SALE."client_id"
+                    INNER JOIN "Sellers" SELLER ON SELLER."id" = SALE."seller_id"
+                    INNER JOIN "Address" ADDR ON ADDR."id" = SALE."address_id"
+                    
+                WHERE 
+                    (SALE."client_id" = :client_id OR :client_id = -1)
+                ORDER BY SALE."id" DESC
+            SQL);
+
+            $stm->bindValue("client_id", $clientId, PDO::PARAM_INT);
+
+            if (!$stm->execute()) {
+                return false;
+            }
+
+            $saleList = $stm->fetchAll(PDO::FETCH_OBJ);
+
+            $idList = array();
+            foreach ($saleList as $sale) {
+                array_push($idList, $sale->saleId);
+                $sale->items = [];
+            }
+
+            $inList = implode(",", $idList);
+
+            $stm = $connection->prepare(<<<SQL
+                SELECT
+                    SP."sale_id" AS "saleId",
+                    SP."product_id" AS "productId",
+                    SP."quantity",
+                    P."price" AS "unitPrice",
+                    P."name" AS "productName"
+                FROM
+                    "Sale_Products" SP
+                    INNER JOIN "Products" P ON P."id" = SP."product_id"
+                WHERE SP."sale_id" IN ($inList)
+                ORDER BY SP."sale_id" DESC
+            SQL);
+
+            if (!$stm->execute()) {
+                return false;
+            }
+
+            $productList = $stm->fetchAll(PDO::FETCH_OBJ);
+
+            /**
+             * The results are ordered, this is important to the next procedure
+             */
+            foreach ($saleList as $sale) {
+                foreach ($productList as $product) {
+
+                    $product->unitPrice = floatval(str_replace(",", ".", str_replace(".", "", $product->unitPrice)));
+
+                    if ($product->saleId == $sale->saleId) {
+                        array_push($sale->items, array_shift($productList));
+                    }
+                }
+            }
+
+            return $saleList;
+        } catch (\Exception $e) {
             header("Location: /error.php");
             exit;
         }

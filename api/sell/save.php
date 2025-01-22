@@ -8,7 +8,7 @@ AuthenticationHandler::verify();
 header("Content-Type: application/json");
 
 $jsonData = json_decode(file_get_contents("php://input"), true);
-$sanitized = new \models\Sell();
+$sanitized = new \models\Sale();
 
 // sanitization of input
 $sanitized->postal_code = filter_var($jsonData["postal_code"], FILTER_SANITIZE_STRING);
@@ -41,7 +41,7 @@ if (isset($jsonData["items"]) && is_array($jsonData["items"])) {
 preg_match("/^[0-9]{5}-[0-9]{3}$/", $sanitized->postal_code, $matches) === 1 or die(http_response_code(400));
 preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/", $sanitized->sale_date, $matches) === 1 or die(http_response_code(400));
 
-$sellDAO = new \dao\SellDAO();
+$sellDAO = new \dao\SaleDAO();
 $sellDAO->save($sanitized);
 
 echo json_encode($sanitized);

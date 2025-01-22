@@ -18,15 +18,24 @@ class UserDAO
         try {
             $connection = DatabaseConnection::getConnection();
             $stm = $connection->prepare(<<<SQL
-                SELECT "id", "email", "role" FROM "Users" WHERE "email" = :email AND "password" = :password
+                SELECT "id", "email", "password", "role" FROM "Users" WHERE "email" = :email
             SQL);
 
             $stm->bindValue("email", $email);
-            $stm->bindValue("password", $password);
 
-            $stm->execute();
+            if (!$stm->execute()) {
+                return false;
+            }
 
-            return $stm->fetchObject();
+            $foundUser = $stm->fetchObject();
+
+            if (!password_verify($password, $foundUser->password)) {
+                return false;
+            }
+
+            unset($foundUser->password);
+
+            return $foundUser;
         } catch (\Exception $e) {
             header("Location: /error.php");
             exit;

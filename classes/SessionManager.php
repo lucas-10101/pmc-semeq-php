@@ -41,11 +41,19 @@ class SessionManager
     }
 
 
+    /**
+     * 
+     * @return \models\User
+     */
     public static function getUser()
     {
         return self::getObject("user");
     }
 
+    /**
+     * Summary of getUserPerson
+     * @return \models\Client|\models\Seller
+     */
     public static function getUserPerson()
     {
         return self::getObject("user-person");
